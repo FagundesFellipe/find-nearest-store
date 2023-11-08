@@ -1,0 +1,37 @@
+version: "3.8"
+volumes:
+  geolocalizacaoServiceBackend:
+  shared_certificates:
+    external: true
+services:
+  geolocalizacao-service-one:
+    image: findyourneareststore:latest
+    container_name: "${SERVICE_ONE_NAME}"
+    hostname: "${SERVICE_ONE_HOSTNAME}"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    volumes:
+      - shared_certificates:/opt/certificates:ro
+      - geolocalizacaoServiceBackend:/opt/geolocalizacao-service
+    networks:
+      nginx_global_proxy:
+  geolocalizacao-service-second:
+    image: findyourneareststore:latest
+    container_name: "${SERVICE_SECOND_NAME}"
+    hostname: "${SERVICE_SECOND_HOSTNAME}"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    volumes:
+      - shared_certificates:/opt/certificates:ro
+      - geolocalizacaoServiceBackend:/opt/geolocalizacao-service
+    networks:
+      nginx_global_proxy:
+networks:
+  nginx_global_proxy:
+    external: true
